@@ -1,0 +1,13 @@
+body {
+    background-color: pink;
+}
+
+   
+.stimg img {
+    height: 20%;
+    width: 20%;
+}
+.stimg img:hover{
+    height: 80%;
+    width: 80%;
+}
