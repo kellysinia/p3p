@@ -1,33 +1,50 @@
 ﻿@{
     Page.Title = "Studenten";
+    Layout= "~/_Layout.cshtml";
 
     var db = Database.Open("studentenoverzicht") ;
     var selectCommand = "SELECT * FROM Student";
 
+    var category= "";
+    var searchTerm = "";
+    
+    if(!Request.QueryString["search"].IsEmpty() ) {
+        searchTerm = "%" + Request.QueryString["search"] + "%";
+        category = Request.QueryString ["category"];
+        selectCommand = "SELECT * FROM student where "+category+" like @0";
+    }
+    
+
 }
 
-<!DOCTYPE html>
 
-<html lang="en">
-    <head>
-         <meta name="viewport" content="width=device-width, initial-scale=1">
-         <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
-         <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="~/styles/StyleSheet.css">
-        <meta charset="utf-8" />
-        <title>studenten</title>
-    </head>
-    <body>
         <div class="container">
-  <h2>NHL Studenten overzicht</h2>
-  <p><strong>Note:</strong> The <strong>data-parent</strong> attribute makes sure that all collapsible elements under the specified parent will be closed when one of the collapsible item is shown.</p>
-        
-
-
-
-<h2>List Movies</h2>
-   @foreach(var row in db.Query(selectCommand))
+            
+            <div class="col-md-6">
+                <div class="nhlimg">
+  <h2><img src="nhl.jpg" alt="student"> <br> 
+   NHL Informatica studenten overzicht</h2>
+                </div>
+            </div>
+ <div class="col-md-6">
+     <div class="zoek">
+            <form method="get">
+      <div>
+        <label for="search">zoek naar:</label>
+        <select name="category">
+            <option value="klas">Klas</option>
+            <option value="voornaam">voornaam</option>
+            <option value="achternaam">achternaam</option>
+            <option value="mentor">SLB'er</option>
+        </select>
+        <input type="text" name="search" value="@Request.QueryString["search"]" />
+        <input type="Submit" value="Search" /><br/>
+      </div>
+    </form>
+</div>
+     </div>
+            <div class="col-md-12">
+   @foreach(var row in db.Query(selectCommand, searchTerm))
    {
 var collapse = "collapse"+row.student_nr;    
 
@@ -45,13 +62,13 @@ var collapse = "collapse"+row.student_nr;
                    </div>
                   <div class="col-md-4">
                     <p>@row.voornaam  @row.tussenvoegsel  @row.achternaam</p>
-                    <p>Klas: @row.opleiding @row.fase</p>
+                    <p>Klas: @row.klas</p>
                     <p>Mentor: @row.mentor</p>
                   </div>
                   <div class="col-md-4">
-                    <p>Email: @row.email_school</p>
                     <p>Mobiel: @row.mobiel</p>
-                    <p>huis tel.:@row.tel_land_nr  @row.tel_nr</p>
+                    <p>Email: @row.email_school</p>
+                    <p>Prive email: @row.email_prive</p>
                   </div>
               </div>
           </a> 
@@ -75,14 +92,16 @@ var collapse = "collapse"+row.student_nr;
                   </div>
                   <div class="col-md-4">
                     <p>aanmeld datum: @row.aanmeld_datum</p>
-                    <p>van: @row.datum_van  @row.tel_nr</p>
-                    <p>tot: @row.datum_tot @row.fase</p>
+                    <p>van: @row.datum_van</p>
+                    <p>tot: @row.datum_tot</p>
                   </div>
         </div>
       </div>
     </div>
   </div>
-}      
+} 
+              
+ </div>
+   
    </div> 
-    </body>
-</html>
+   

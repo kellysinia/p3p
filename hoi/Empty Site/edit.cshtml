@@ -1,0 +1,80 @@
+﻿@{
+     Page.Title = "Edit info.";
+
+    Layout = "~/_Layout.cshtml";
+
+    var email_prive = "";
+    var adres = "";
+    var plaats="";
+    var student_nr= 0;
+    var tel_nr="";
+    var mobiel="";
+
+    if(!IsPost){
+        if(!Request.QueryString["student_nr"].IsEmpty()){
+            student_nr = Convert.ToInt32(Request.QueryString["student_nr"]);
+            var db = Database.Open("studentenoverzicht") ;
+            var selectCommand = "SELECT * FROM Student WHERE student_nr=@0";
+            var row = db.QuerySingle(selectCommand, student_nr);
+            
+            if(row != null){
+                email_prive = row.email_prive;
+                adres = row.adres;
+                plaats = row.plaats;
+                student_nr=row.student_nr;
+
+            }
+            
+        }
+        else{
+            Validation.AddFormError("No student was selected.");
+        }
+    }
+    if(IsPost){
+        Validation.RequireField("email_prive", "You must enter a email adres.");
+         Validation.RequireField("adres", "You must enter a adres.");
+         Validation.RequireField("plaats", "You must enter a plaats.");
+         Validation.RequireField("mobiel", "You must enter a mobiel nummer.");
+        
+
+        email_prive = Request.Form["email_prive"];
+        plaats = Request.Form["plaats"];
+        adres = Request.Form["adres"];
+        student_nr =Convert.ToInt32(Request.Form["student_nr"]);
+
+        if(Validation.IsValid()){
+            var db = Database.Open("studentenoverzicht") ;
+            var updateCommand = "UPDATE student SET email_prive=@0, adres=@1, plaats=@2, tel_nr=@3, mobiel=@4 WHERE student_nr=@5";
+            db.Execute(updateCommand, email_prive, adres, plaats,tel_nr, mobiel, student_nr);
+            Response.Redirect("~/Home");
+       }
+    }
+}
+
+<h2>Edit info.</h2>
+    @Html.ValidationSummary()
+  <form method="post">
+    <fieldset>
+      <legend>Student Information</legend>
+
+      <p><label for="email_prive">Prive email:</label>
+         <input type="text" name="email_prive" value="@email_prive" /></p>
+
+      <p><label for="plaats">plaats:</label>
+         <input type="text" name="plaats" value="@plaats" /></p>
+
+        <p><label for="adres">Adres:</label>
+         <input type="text" name="adres" value="@adres" /></p>
+
+        <p><label for="tel_nr">Telefoon nummer:</label>
+         <input type="text" name="tel_nr" value="@tel_nr" /></p>
+
+        <p><label for="mobiel">Mobiel nummer:</label>
+         <input type="text" name="mobiel" value="@mobiel" /></p>
+
+      <input type="hidden" name="student_nr" value="@student_nr" />
+
+      <p><input type="submit" name="buttonSubmit" value="Submit Changes" /></p>
+    </fieldset>
+  </form>
+    <p><a href="~/Home">Return to Home.</a></p>

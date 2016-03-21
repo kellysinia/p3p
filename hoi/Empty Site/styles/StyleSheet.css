@@ -1,5 +1,5 @@
 body {
-    background-color: pink;
+    background-color: #F8F8F8;
 }
 
    
@@ -10,4 +10,11 @@ body {
 .stimg img:hover{
     height: 80%;
     width: 80%;
+}
+.zoek {
+    padding-top: 10%;
+}
+.nhlimg img {
+    height: 100%;
+    width: 100%;
 }
