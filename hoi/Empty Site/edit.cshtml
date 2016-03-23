@@ -1,29 +1,40 @@
-﻿@{
+﻿@using Microsoft.Web.Helpers;
+@{
      Page.Title = "Edit info.";
      Layout = "~/_Layout.cshtml";
-
+    var db = Database.Open("studentenoverzicht");
     var email_prive = "";
     var adres = "";
     var plaats="";
-    var student_id= 424412;
+    var student_id = Session["id"];
     var tel_nr="";
     var mobiel="";
     var naam="";
     var email_school="";
     var vooropleiding="";
+    var fileSavePath = "";
+    var fileName = ".jpg";
+
+    if (IsPost)
+    {
+        var uploadedFile = Request.Files[0];
+        fileName = Convert.ToString(student_id) + fileName;
+        fileSavePath = Server.MapPath(fileName);
+        uploadedFile.SaveAs(fileSavePath);
+        var updateCommand = "UPDATE student SET foto=@0 WHERE student_nr=@1";
+        db.Execute(updateCommand, fileName, Convert.ToInt32((student_id)));
+    }
    
 
     if(!IsPost){
         if(!"student_nr".IsEmpty()){
-            var db = Database.Open("studentenoverzicht") ;
-            var selectCommand = "SELECT * FROM Student WHERE student_nr="+student_id;
-            var row = db.QuerySingle(selectCommand);
+            var selectCommand = "SELECT * FROM Student WHERE student_nr=@0";
+            var row = db.QuerySingle(selectCommand, student_id);
             
             if(row != null){
                 email_prive = row.email_prive;
                 adres = row.adres;
                 plaats = row.plaats;
-                student_id= row.student_nr;
                 mobiel= row.mobiel;
                 tel_nr= Convert.ToString(row.tel_nr);
                 naam= row.voornaam +" "+ row.tussenvoegsel +" "+row.achternaam;
@@ -50,11 +61,10 @@
         adres = Request.Form["adres"];
         tel_nr = Convert.ToString(Request.Form["tel_nr"]);
         mobiel = Request.Form["mobiel"];
-        student_id =Convert.ToInt32(Request.Form["student_id"]);
+        student_id =Convert.ToString(Request.Form["student_id"]);
 
         if(Validation.IsValid()){
-        var db = Database.Open("studentenoverzicht") ;
-        var updateCommand = "UPDATE student SET email_prive=@0, plaats=@1, adres=@2, tel_nr=@3, mobiel=@4 WHERE student_nr=@5";
+        var updateCommand = "UPDATE student SET email_prive=@0, plaats=@1, adres=@2, tel_nr=@3, mobiel=@4,  WHERE student_nr=@5";
         db.Execute(updateCommand, email_prive, plaats, adres, tel_nr, mobiel, student_id);
         Response.Redirect("~/edit");
        }
@@ -87,10 +97,21 @@
         <p><label for="mobiel">Mobiel nummer:</label>
          <input type="text" name="mobiel" value="@mobiel" /></p>
 
-      <input type="hidden" name="student_id" value="@student_id" />
+      <input type="hidden" name="student_id" value="@student_id" />             
 
       <p><input type="submit" name="buttonSubmit" value="Submit Changes" /></p>
     </fieldset>
   </form>
     <p><a href="~/Home">Return to Home.</a></p>
 </div>
+<div class="fotouploader">
+    <h1>FileUpload - Single-File Example</h1>
+    @FileUpload.GetHtml(
+        initialNumberOfFiles:1,
+        allowMoreFilesToBeAdded:false,
+        includeFormTag:true,
+        uploadText:"Upload")
+    @if (IsPost) {
+        <span>File uploaded!</span><br/>
+    }
+    </div>

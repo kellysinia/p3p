@@ -18,6 +18,11 @@ body {
     height: 100%;
     width: 100%;
 }
-.hoi {margin-left: 20px;
-      margin-right: 20px;
+.nhlimage img {
+    height:50%;
+    width: 50%; 
+    margin-top: 30%;
+}
+.fotouploader{
+    
 }

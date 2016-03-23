@@ -1,84 +1,99 @@
 ﻿@{
+    Session["docent"] = 1;
     Page.Title = "Admin";
     Layout= "~/_Layout.cshtml";
-
     var db = Database.Open("studentenoverzicht");
-    var selectCommand = "SELECT * FROM Docent";
+    if(IsPost)
+    {
+        string id = Request["id"];
+        if(Request["submit"] == "Maak admin")
+        {
+            var updateCom = "UPDATE docenten SET admin = 1 WHERE id = @0";
+            db.Execute(updateCom, id);
+        }
+        else
+        {
+            var updateCom = "UPDATE docenten SET admin = 0 WHERE id = @0";
+            db.Execute(updateCom, id);
+        }
+    }
 
+    var selectCommand = "SELECT * FROM docenten";
     var category= "";
     var category2= "";
     var searchTerm = "";
     bool mopshond = false;
     
-    if(!Request.QueryString["search"].IsEmpty() ) {
+    if(!Request.QueryString["search"].IsEmpty()) 
+    {
         searchTerm = "%" + Request.QueryString["search"] + "%";
         category = Request.QueryString ["category"];
-        selectCommand = "SELECT * FROM docent where "+category+" like @0";
+        selectCommand = "SELECT * FROM docenten where "+category+" like @0";
     }
-    
-
 }
-
-
-
-        <div class="container">
-            
-            <div class="col-md-6">
-                <div class="nhlimg">
-  <h2><img src="nhl.jpg" alt="student"> <br> 
-   NHL Informatica studentenoverzicht</h2>
-                </div>
-            </div>
- <div class="col-md-6">
-     <div class="zoek">
+<div class="container">
+    <div class="col-md-6">
+        <div class="nhlimg">
+            <h2><img src="nhl.jpg" alt="student"> <br> 
+            NHL Informatica studentenoverzicht</h2>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="zoek">
             <form method="get">
-      <div>
-        <select name="category">
-            <option value="voornaam">voornaam</option>
-            <option value="achternaam">achternaam</option>
-        </select>
-        <input type="text" name="search" value="@Request.QueryString["search"]" />
-        <input type="Submit" value="Search" /><br/>
-      </div>
-    </form>
-</div>
-     </div>
+            <div>
+                <select name="category">
+                <option value="voornaam">voornaam</option>
+                <option value="achternaam">achternaam</option>
+                </select>
+                <input type="text" name="search" value="@Request.QueryString["search"]" />
+                <input type="Submit" value="Search" /><br/>
+            </div>
+            </form>
+        </div>
+    </div>
 
-<div class="col-md-12">
-         @foreach(var row in db.Query(selectCommand, searchTerm))
-   {
-var collapse = "collapse"+row.id;    
-
-   <div class="panel-group">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        
-          <a data-toggle="collapse" href=#@collapse>
-              <div class="row">
-                  <div class="col-md-4">
-                    <p>@row.voornaam  @row.tussenvoegsel  @row.achternaam</p>
-                    <p>Adminstatus: @row.admin</p>
-                    <p>E-mailadres: @row.email_school</p>
-                      </div>
-                  </div>
-              </a>
-                      <form method="get">   
-                     <div>
-        <label for="admin">Verander naar:</label>
-        <input type="text" name="admin" value="@Request.QueryString["admin"]" />
-        <input type="Submit" value="Admin" /><br/>  
-      </div>
-    </form>
-
-
-                  </div>
-              </div>    
-             
-</div>
-         
-} 
-                
- </div>
-   
-   </div> 
-   
+    <div class="col-md-12">
+        @foreach(var row in db.Query(selectCommand, searchTerm))
+        {
+            if(row.id != Convert.ToInt32(Session["Docent"]))
+            {
+                string admin = "";
+                if (row.admin == 1)
+                {
+                    admin = "Admin";
+                }
+                else
+                {
+                    admin = "Geen admin";   
+                }
+                <div class="panel-group">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <p>@row.voornaam  @row.tussenvoegsel  @row.achternaam</p>
+                                    <p>Adminstatus: @admin</p>
+                                    <p>E-mailadres: @row.email</p>
+                                </div>
+                            </div>
+                            <form action="Admin.cshtml" method="post">   
+                            <div>
+                                <input type="hidden" name="id" value="@row.id">
+                                @if(row.admin == 0)
+                                {
+                                    <input type="Submit" name="submit" value="Maak admin" /><br/>
+                                }
+                                else
+                                {
+                                    <input type="Submit" name="submit" value="Ontneem admin" /><br/>
+                                }
+                            </div>
+                            </form>
+                        </div>
+                    </div>    
+                 </div>
+            }
+        }           
+    </div>
+</div> 
