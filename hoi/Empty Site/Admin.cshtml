@@ -6,7 +6,9 @@
     var selectCommand = "SELECT * FROM Docent";
 
     var category= "";
+    var category2= "";
     var searchTerm = "";
+    bool mopshond = false;
     
     if(!Request.QueryString["search"].IsEmpty() ) {
         searchTerm = "%" + Request.QueryString["search"] + "%";
@@ -24,14 +26,28 @@
             <div class="col-md-6">
                 <div class="nhlimg">
   <h2><img src="nhl.jpg" alt="student"> <br> 
-   NHL Informatica administratoroverzicht</h2>
+   NHL Informatica studentenoverzicht</h2>
                 </div>
             </div>
-            <div class="col-md-12">
-   @foreach(var row in db.Query(selectCommand, searchTerm))
+ <div class="col-md-6">
+     <div class="zoek">
+            <form method="get">
+      <div>
+        <select name="category">
+            <option value="voornaam">voornaam</option>
+            <option value="achternaam">achternaam</option>
+        </select>
+        <input type="text" name="search" value="@Request.QueryString["search"]" />
+        <input type="Submit" value="Search" /><br/>
+      </div>
+    </form>
+</div>
+     </div>
+
+<div class="col-md-12">
+         @foreach(var row in db.Query(selectCommand, searchTerm))
    {
 var collapse = "collapse"+row.id;    
-
 
    <div class="panel-group">
     <div class="panel panel-default">
@@ -43,17 +59,25 @@ var collapse = "collapse"+row.id;
                     <p>@row.voornaam  @row.tussenvoegsel  @row.achternaam</p>
                     <p>Adminstatus: @row.admin</p>
                     <p>E-mailadres: @row.email_school</p>
+                      </div>
                   </div>
-              </div>
-          </a> 
-          
-         
+              </a>
+                      <form method="get">   
+                     <div>
+        <label for="admin">Verander naar:</label>
+        <input type="text" name="admin" value="@Request.QueryString["admin"]" />
+        <input type="Submit" value="Admin" /><br/>  
       </div>
-      
-    </div>
-  </div>
+    </form>
+
+
+                  </div>
+              </div>    
+             
+</div>
+         
 } 
-              
+                
  </div>
    
    </div> 
