@@ -1,0 +1,60 @@
+﻿@{
+    Page.Title = "Admin";
+    Layout= "~/_Layout.cshtml";
+
+    var db = Database.Open("studentenoverzicht");
+    var selectCommand = "SELECT * FROM Docent";
+
+    var category= "";
+    var searchTerm = "";
+    
+    if(!Request.QueryString["search"].IsEmpty() ) {
+        searchTerm = "%" + Request.QueryString["search"] + "%";
+        category = Request.QueryString ["category"];
+        selectCommand = "SELECT * FROM docent where "+category+" like @0";
+    }
+    
+
+}
+
+
+
+        <div class="container">
+            
+            <div class="col-md-6">
+                <div class="nhlimg">
+  <h2><img src="nhl.jpg" alt="student"> <br> 
+   NHL Informatica administratoroverzicht</h2>
+                </div>
+            </div>
+            <div class="col-md-12">
+   @foreach(var row in db.Query(selectCommand, searchTerm))
+   {
+var collapse = "collapse"+row.id;    
+
+
+   <div class="panel-group">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        
+          <a data-toggle="collapse" href=#@collapse>
+              <div class="row">
+                  <div class="col-md-4">
+                    <p>@row.voornaam  @row.tussenvoegsel  @row.achternaam</p>
+                    <p>Adminstatus: @row.admin</p>
+                    <p>E-mailadres: @row.email_school</p>
+                  </div>
+              </div>
+          </a> 
+          
+         
+      </div>
+      
+    </div>
+  </div>
+} 
+              
+ </div>
+   
+   </div> 
+   

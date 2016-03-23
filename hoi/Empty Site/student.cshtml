@@ -4,6 +4,7 @@
 
     var nummer=114006;
 
+
     var db = Database.Open("studentenoverzicht") ;
     var selectCommand = "SELECT * FROM Student WHERE student_nr ="+ nummer;
     
@@ -12,3 +13,10 @@
    {
 <h1>Student informatie van @row.voornaam @row.achternaam</h1>
 }
+
+    
+}
+
+
+
+
