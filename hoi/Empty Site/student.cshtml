@@ -4,11 +4,14 @@
 
     var nummer=114006;
 
-    var db = Database.Open("studentenoverzicht") ;
-    var selectCommand = "SELECT * FROM Student WHERE student_nr=nummer";
+    var db = Database.Open("studentenoverzicht");
+    var selectCommand = "SELECT * FROM Student WHERE student_nr=" + nummer;
     
-    var row = db.Query(selectCommand, searchTerm);
+    @foreach(var row in db.Query(selectCommand))
+    {
+    <h1>Student informatie van @row.voornaam @row.achternaam</h1>
+    }
 }
-<h1>Student informatie van @row.voornaam</h1>
+
 
 
