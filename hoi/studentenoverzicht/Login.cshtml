@@ -1,6 +1,6 @@
 ﻿@{
     Layout = "~/_Layout.cshtml";
-    Page.Title = "Log in";
+    Page.Title = " Student Log in";
 
     var db = Database.Open("studentenoverzicht");
     var selectCommand = "SELECT * FROM Student";
@@ -26,7 +26,7 @@
             straatnaam = Request.Form["straatnaam"];
             straatnaam2 = "SELECT adres FROM student WHERE student_nr =" +studentnummer;
             straatnaam2 = db.QueryValue(straatnaam2);
-        }
+        
 
 
             if (straatnaam==straatnaam2)
@@ -38,6 +38,8 @@
             else 
             {
                 ModelState.AddFormError("The user name or password provided is incorrect.");
+            }
+
             }
     }   
 }

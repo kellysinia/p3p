@@ -1,0 +1,83 @@
+﻿@{
+    Layout = "~/_Layout.cshtml";
+    Page.Title = " Docent Log in";
+
+    var db = Database.Open("studentenoverzicht");
+    var selectCommand = "SELECT * FROM Docent";
+
+    var Naam = "";
+    var Achternaam = "";
+    var Password = "";
+    var Password2 = "";
+
+    var returnUrl = Request.QueryString["ReturnUrl"];
+    if (returnUrl.IsEmpty()) 
+    {
+        returnUrl = Href("~/Home");
+    }
+
+    Validation.RequireField("Naam", "Wel naam invullen jong");
+    Validation.RequireField("Achternaam", "Wel achternaam invullen jong");
+    Validation.RequireField("Password", "You must specify a Password.");
+    
+    if (IsPost) 
+    {
+        if (Validation.IsValid()) 
+        {
+            Naam = Request.Form["Naam"];
+            Achternaam = Request.Form["Achternaam"];
+            Password = Request.Form["Password"];
+            Password2 = "SELECT Password FROM docenten WHERE voornaam = @0 AND achternaam = @1";
+            Password2 = db.QueryValue(Password2, Naam, Achternaam);
+        
+
+
+            if (Password==Password2)
+            {
+                Session["Docentid"] = Naam;
+                Context.RedirectLocal(returnUrl);
+                return;
+            } 
+            else 
+            {
+                ModelState.AddFormError("The user name or password provided is incorrect.");
+            }
+
+            }
+    }   
+}
+<hgroup class="title">
+    <h1>@Page.Title.</h1>
+</hgroup>
+
+<section id="loginForm">
+    <h2>Use your account to log in.</h2>
+    <form method="post">
+        @AntiForgery.GetHtml()
+        @Html.ValidationSummary("Log in was unsuccessful. Please correct the errors and try again.")
+
+        <fieldset>
+            <legend>Log in to Your Account</legend>
+            <ol>
+                <li class="email">
+                    <label for="email" @if (!ModelState.IsValidField("Naam"))
+                                       {<text>class="error-label"</text>}>Naam:</label>
+                    <input type="text" id="Naam" name="Naam" value="@Naam" @Validation.For("Naam")/>
+                    @Html.ValidationMessage("Naam")
+                </li>
+                <li class="email">
+                    <label for="email" @if (!ModelState.IsValidField("Achternaam"))
+                                       {<text>class="error-label"</text>}>Achternaam:</label>
+                    <input type="text" id="Achternaam" name="Achternaam" value="@Achternaam" @Validation.For("Achternaam")/>
+                    @Html.ValidationMessage("Achternaam")
+                </li>
+                <li class="Password">
+                    <label for="Password" @if (!ModelState.IsValidField("Password")) {<text>class="error-label"</text>}>Password</label>
+                    <input type="text" id="Password" name="Password" @Validation.For("Passoword")/>
+                    @Html.ValidationMessage("Password")
+                </li>
+            </ol>
+            <input type="submit" value="Log in" />
+        </fieldset>
+    </form>
+</section>
