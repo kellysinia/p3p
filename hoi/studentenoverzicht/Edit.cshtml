@@ -6,6 +6,11 @@
     var db = Database.Open("studentenoverzicht");
     var fileSavePath = "";
     var fileName = ".jpg";
+
+    if(!Request.QueryString["student_nr"].IsEmpty())
+    {
+        Session["id"]=Request.QueryString["student_nr"];
+    }
  
     if(!IsPost)
     {

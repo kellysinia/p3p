@@ -1,4 +1,8 @@
 ﻿@{
+    if (Session["Docentid"] == null)
+    {
+        Response.Redirect("~/DLogin");
+    }
     Page.Title = "Studenten";
     Layout= "~/_Layout.cshtml";
 
@@ -63,6 +67,7 @@
                                 <p>Email: @row.email_school</p>
                                 <p>Prive email: @row.email_prive</p>
                             </div>
+                            <a href="~/Edit?student_nr=@row.student_nr"><input type="submit" value="Edit" /></a>
                         </div>
                         </a> 
                     </div>
