@@ -43,9 +43,11 @@
             }
     }   
 }
-<hgroup class="title">
+<div class="container">
+   <div class="col-md-3"></div>
+    <div class="col-md-6">
     <h1>@Page.Title.</h1>
-</hgroup>
+
 
 <section id="loginForm">
     <h2>Use your account to log in.</h2>
@@ -63,7 +65,7 @@
                     @Html.ValidationMessage("studentnummer")
                 </li>
                 <li class="straatnaam">
-                    <label for="straatnaam" @if (!ModelState.IsValidField("straatnaam")) {<text>class="error-label"</text>}>straatnaam</label>
+                    <label for="straatnaam" @if (!ModelState.IsValidField("straatnaam")) {<text>class="error-label"</text>}>Password:</label>
                     <input type="text" id="straatnaam" name="straatnaam" @Validation.For("straatnaam")/>
                     @Html.ValidationMessage("straatnaam")
                 </li>
@@ -72,3 +74,6 @@
         </fieldset>
     </form>
 </section>
+        </div>
+    <div class="col-md-3"></div>
+</div>

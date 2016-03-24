@@ -34,7 +34,10 @@
 
             if (Password==Password2)
             {
-                Session["Docentid"] = Naam;
+                var selectCom = "SELECT * FROM docent WHERE voornaam = @0 AND achternaam = @1";
+                selectCom = db.QuerySingle(selectCom, Naam, Achternaam);
+                Session["Docentid"] = selectCom.id;
+                Session["Admin"] = selectCom.admin;
                 Context.RedirectLocal(returnUrl);
                 return;
             } 
