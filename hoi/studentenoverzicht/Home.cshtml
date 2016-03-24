@@ -1,0 +1,94 @@
+﻿@{
+    Page.Title = "Studenten";
+    Layout= "~/_Layout.cshtml";
+
+    var db = Database.Open("studentenoverzicht");
+    var selectCommand = "SELECT * FROM Student";
+
+    var category= "";
+    var searchTerm = "";
+    
+    if(!Request.QueryString["search"].IsEmpty() ) 
+    {
+        searchTerm = "%" + Request.QueryString["search"] + "%";
+        category = Request.QueryString ["category"];
+        selectCommand = "SELECT * FROM student where "+category+" like @0";
+    }
+}
+<div class="container">
+    <div class="col-md-6">
+        <div class="nhlimg">
+            <h2><img src="nhl.jpg" alt="student"> <br> 
+            NHL Informatica studentenoverzicht</h2>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="zoek">
+            <form method="get">
+            <div>
+                <label for="search">zoek naar:</label>
+                <select name="category">
+                <option value="klas">Klas</option>
+                <option value="voornaam">voornaam</option>
+                <option value="achternaam">achternaam</option>
+                <option value="mentor">SLB'er</option>
+                </select>
+                <input type="text" name="search" value="@Request.QueryString["search"]" />
+                <input type="Submit" value="Search" /><br/>
+            </div>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-12">
+        @foreach(var row in db.Query(selectCommand, searchTerm))
+        {
+            var collapse = "collapse"+row.student_nr;
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <a data-toggle="collapse" href=#@collapse>
+                        <div class="row">
+                            <div class="col-md-4"> 
+                                <div class="stimg">
+                                    <img src="@row.foto" alt="student">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <p>@row.voornaam  @row.tussenvoegsel  @row.achternaam</p>
+                                <p>Klas: @row.klas</p>
+                                <p>Mentor: @row.mentor</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p>Mobiel: @row.mobiel</p>
+                                <p>Email: @row.email_school</p>
+                                <p>Prive email: @row.email_prive</p>
+                            </div>
+                        </div>
+                        </a> 
+                    </div>
+                    <div id=@collapse class="panel-collapse collapse out">
+                        <div class="panel-body">
+                            <div class="col-md-4"> 
+                                <div class="stimg">
+                                    <p>Geboorte datum: @row.geb_datum</p>
+                                    <p>Geslacht: @row.geslacht</p>
+                                    <p>Vooropleiding: @row.vooropleiding</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <p>@row.adres</p>
+                                <p>@row.plaats</p>
+                                <p>@row.land</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p>aanmeld datum: @row.aanmeld_datum</p>
+                                <p>van: @row.datum_van</p>
+                                <p>tot: @row.datum_tot</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        } 
+    </div>
+</div>

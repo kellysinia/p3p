@@ -1,0 +1,23 @@
+body {
+    background-color: #F8F8F8;
+}
+
+   
+.stimg img {
+    height: 20%;
+    width: 20%;
+}
+.stimg img:hover{
+    height: 80%;
+    width: 80%;
+}
+.zoek {
+    padding-top: 10%;
+}
+.nhlimg img {
+    height: 100%;
+    width: 100%;
+}
+.hoi {margin-left: 20px;
+      margin-right: 20px;
+}

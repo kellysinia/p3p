@@ -1,0 +1,96 @@
+﻿@using Microsoft.Web.Helpers;
+@{
+    Page.Title = "Edit info.";
+    Layout = "~/_Layout.cshtml";
+
+    var db = Database.Open("studentenoverzicht");
+    var fileSavePath = "";
+    var fileName = ".jpg";
+
+    if(!IsPost)
+    {
+        var selectCommand = "SELECT * FROM Student WHERE student_nr = @0";
+        var row = db.QuerySingle(selectCommand, Session["id"]);
+            
+        if(row != null)
+        {
+            Session["email_prive"] = row.email_prive;
+            Session["adres"] = row.adres;
+            Session["plaats"] = row.plaats;
+            Session["mobiel"] = row.mobiel;
+            Session["tel_nr"] = Convert.ToString(row.tel_nr);
+            Session["naam"] = row.voornaam +" "+ row.tussenvoegsel +" "+row.achternaam;
+            Session["email_school"] =row.email_school;
+            Session["vooropleiding"] =row.vooropleiding;
+        }
+    }
+    if(IsPost)
+    {
+        if (Request.Form["buttonSubmit"] == "Submit Changes")
+        {
+            Validation.RequireField("email_prive", "Er moet een e-mail adres ingevult zijn.");
+            Validation.RequireField("adres", "Er moet een adres ingevult zijn.");
+            Validation.RequireField("plaats", "Er moet een plaats ingevult zijn.");
+            Validation.RequireField("mobiel", "Er moet een mobiel nummer ingevult zijn.");
+            Validation.RequireField("tel_nr", "Er moet een telefoon nummer ingevult zijn.");
+            Validation.RequireField("student_id" );
+
+            Session["email_prive"] = Request.Form["email_prive"];
+            Session["plaats"] = Request.Form["plaats"];
+            Session["adres"] = Request.Form["adres"];
+            Session["tel_nr"] = Convert.ToString(Request.Form["tel_nr"]);
+            Session["mobiel"] = Request.Form["mobiel"];
+
+            if(Validation.IsValid())
+            {
+                var updateCommand = "UPDATE student SET email_prive=@0, plaats=@1, adres=@2, tel_nr=@3, mobiel=@4,  WHERE student_nr=@5";
+                db.Execute(updateCommand, Session["email_prive"], Session["plaats"], Session["adres"], Session["tel_nr"], Session["mobiel"], Session["id"]);
+                Response.Redirect("~/Edit");
+            }
+        }
+        else
+        {
+            var uploadedFile = Request.Files[0];
+            fileName = Convert.ToString(Session["id"]) + fileName;
+            var updateCommand = "UPDATE student SET foto = @0 WHERE student_nr = @1";
+            db.Execute(updateCommand, fileName, Convert.ToInt32(Session["student_id"]));
+            Response.Write(fileName);
+            //uploadedFile.SaveAs(fileName);
+        }
+    }
+}
+<div class="col-md-12">
+<h2>Edit info.</h2>
+    @Html.ValidationSummary()
+    <form method="post">
+    <fieldset>
+        <legend>Student Information</legend>
+        <p><label for="naam">Naam: @Session["naam"]</label></p>
+        <p><label for="vooropleiding">Vooropleiding: @Session["vooropleiding"]</label></p>
+        <p><label for="email_prive">Prive email:</label>
+            <input type="text" name="email_prive" value="@Session["email_prive"]" /></p>
+        <p><label for="plaats">plaats:</label>
+            <input type="text" name="plaats" value="@Session["plaats"]" /></p>
+        <p><label for="adres">Adres:</label>
+            <input type="text" name="adres" value="@Session["adres"]" /></p>
+        <p><label for="tel_nr">Telefoon nummer:</label>
+            <input type="text" name="tel_nr" value="@Session["tel_nr"]" /></p>
+        <p><label for="mobiel">Mobiel nummer:</label>
+            <input type="text" name="mobiel" value="@Session["mobiel"]" /></p>            
+        <p><input type="submit" name="buttonSubmit" value="Submit Changes" /></p>
+    </fieldset>
+    </form>
+    <p><a href="~/Home">Return to Home.</a></p>
+</div>
+<div class="fotouploader">
+    <h1>FileUpload - Single-File Example</h1>
+    @FileUpload.GetHtml(
+        initialNumberOfFiles:1,
+        allowMoreFilesToBeAdded:false,
+        includeFormTag:true,
+        uploadText:"Upload")
+    @if (IsPost) 
+    {
+        <span>File uploaded!</span><br/>
+    }
+</div>
