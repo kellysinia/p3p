@@ -2,16 +2,16 @@
 @{
     Page.Title = "Edit info.";
     Layout = "~/_Layout.cshtml";
-
+ 
     var db = Database.Open("studentenoverzicht");
     var fileSavePath = "";
     var fileName = ".jpg";
-
+ 
     if(!IsPost)
     {
         var selectCommand = "SELECT * FROM Student WHERE student_nr = @0";
         var row = db.QuerySingle(selectCommand, Session["id"]);
-            
+           
         if(row != null)
         {
             Session["email_prive"] = row.email_prive;
@@ -20,8 +20,9 @@
             Session["mobiel"] = row.mobiel;
             Session["tel_nr"] = Convert.ToString(row.tel_nr);
             Session["naam"] = row.voornaam +" "+ row.tussenvoegsel +" "+row.achternaam;
-            Session["email_school"] =row.email_school;
-            Session["vooropleiding"] =row.vooropleiding;
+            Session["email_school"] = row.email_school;
+            Session["vooropleiding"] = row.vooropleiding;
+            Session["foto"] = row.foto;
         }
     }
     if(IsPost)
@@ -34,13 +35,13 @@
             Validation.RequireField("mobiel", "Er moet een mobiel nummer ingevult zijn.");
             Validation.RequireField("tel_nr", "Er moet een telefoon nummer ingevult zijn.");
             Validation.RequireField("student_id" );
-
+ 
             Session["email_prive"] = Request.Form["email_prive"];
             Session["plaats"] = Request.Form["plaats"];
             Session["adres"] = Request.Form["adres"];
             Session["tel_nr"] = Convert.ToString(Request.Form["tel_nr"]);
             Session["mobiel"] = Request.Form["mobiel"];
-
+ 
             if(Validation.IsValid())
             {
                 var updateCommand = "UPDATE student SET email_prive=@0, plaats=@1, adres=@2, tel_nr=@3, mobiel=@4,  WHERE student_nr=@5";
@@ -52,19 +53,26 @@
         {
             var uploadedFile = Request.Files[0];
             fileName = Convert.ToString(Session["id"]) + fileName;
+            fileSavePath = Server.MapPath(fileName);
             var updateCommand = "UPDATE student SET foto = @0 WHERE student_nr = @1";
-            db.Execute(updateCommand, fileName, Convert.ToInt32(Session["student_id"]));
-            Response.Write(fileName);
-            //uploadedFile.SaveAs(fileName);
+            db.Execute(updateCommand, fileName, Convert.ToInt32(Session["id"]));
+            Session["foto"] = fileName;
+            uploadedFile.SaveAs(fileSavePath);
         }
     }
 }
-<div class="col-md-12">
+<div class="col-md-6">
+    <div class="editfoto">
+        <img src="@Session["foto"]" alt="student">
+    </div>
+</div>
+<div class="col-md-6">
 <h2>Edit info.</h2>
     @Html.ValidationSummary()
     <form method="post">
     <fieldset>
         <legend>Student Information</legend>
+       
         <p><label for="naam">Naam: @Session["naam"]</label></p>
         <p><label for="vooropleiding">Vooropleiding: @Session["vooropleiding"]</label></p>
         <p><label for="email_prive">Prive email:</label>
@@ -85,12 +93,8 @@
 <div class="fotouploader">
     <h1>FileUpload - Single-File Example</h1>
     @FileUpload.GetHtml(
-        initialNumberOfFiles:1,
-        allowMoreFilesToBeAdded:false,
-        includeFormTag:true,
-        uploadText:"Upload")
-    @if (IsPost) 
-    {
-        <span>File uploaded!</span><br/>
-    }
+    initialNumberOfFiles:1,
+    allowMoreFilesToBeAdded:false,
+    includeFormTag:true,
+    uploadText:"Upload")
 </div>
