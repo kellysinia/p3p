@@ -10,6 +10,8 @@
     if(!Request.QueryString["student_nr"].IsEmpty())
     {
         Session["id"]=Request.QueryString["student_nr"];
+    } else {
+        Response.Redirect("/Login");
     }
  
     if(!IsPost)
