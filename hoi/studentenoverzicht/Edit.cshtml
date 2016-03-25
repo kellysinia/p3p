@@ -7,17 +7,38 @@
     var fileSavePath = "";
     var fileName = ".jpg";
 
+    // rId holds the Id of the user we want to edit.
+    var rId = -1;
     if(!Request.QueryString["student_nr"].IsEmpty())
     {
-        Session["id"]=Request.QueryString["student_nr"];
-    } else {
-        Response.Redirect("/Login");
+        // Set rId to the parameter in the url
+        rId = Convert.ToInt32(Request.QueryString["student_nr"]);
     }
  
+    bool allowed = false;
+
+    // Check for docent login and admin rights
+    // rId can't be -1 because a Docent can't edit himself
+    if (Session["Docentid"] != null && Session["Admin"] != null && rId == -1) {
+        allowed = true;
+    }
+
+    // Check for student login and rights
+    // A user can only edit himself so the rId must be -1 or the rId must be equal to the id of the logged in user
+    if (Session["id"] != null && (rId == -1 || Convert.ToInt32(Session["id"]) == rId)) {
+        rId = Convert.ToInt32(Session["id"]);
+        allowed = true;
+    }
+
+    // If not allowed redirect back to login
+    if (!allowed) {
+        Response.Redirect("/Login");
+    }
+
     if(!IsPost)
     {
         var selectCommand = "SELECT * FROM Student WHERE student_nr = @0";
-        var row = db.QuerySingle(selectCommand, Session["id"]);
+        var row = db.QuerySingle(selectCommand, rId);
            
         if(row != null)
         {
@@ -52,17 +73,17 @@
             if(Validation.IsValid())
             {
                 var updateCommand = "UPDATE student SET email_prive=@0, plaats=@1, adres=@2, tel_nr=@3, mobiel=@4,  WHERE student_nr=@5";
-                db.Execute(updateCommand, Session["email_prive"], Session["plaats"], Session["adres"], Session["tel_nr"], Session["mobiel"], Session["id"]);
+                db.Execute(updateCommand, Session["email_prive"], Session["plaats"], Session["adres"], Session["tel_nr"], Session["mobiel"], rId);
                 Response.Redirect("~/Edit");
             }
         }
         else
         {
             var uploadedFile = Request.Files[0];
-            fileName = Convert.ToString(Session["id"]) + fileName;
+            fileName = Convert.ToString(rId) + fileName;
             fileSavePath = Server.MapPath(fileName);
             var updateCommand = "UPDATE student SET foto = @0 WHERE student_nr = @1";
-            db.Execute(updateCommand, fileName, Convert.ToInt32(Session["id"]));
+            db.Execute(updateCommand, fileName, rId);
             Session["foto"] = fileName;
             uploadedFile.SaveAs(fileSavePath);
         }
