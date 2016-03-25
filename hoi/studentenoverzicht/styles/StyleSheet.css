@@ -28,3 +28,6 @@ body {
 .fotouploader {
     margin-bottom: 50px;
 }
+.validation-summary-valid {
+    display:  none;
+}
