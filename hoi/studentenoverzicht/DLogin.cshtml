@@ -20,33 +20,23 @@
     Validation.RequireField("Achternaam", "Wel achternaam invullen jong");
     Validation.RequireField("Password", "You must specify a Password.");
     
-    if (IsPost) 
+    if (IsPost)
     {
         if (Validation.IsValid()) 
         {
             Naam = Request.Form["Naam"];
             Achternaam = Request.Form["Achternaam"];
             Password = Request.Form["Password"];
-            Password2 = "SELECT Password FROM docenten WHERE voornaam = @0 AND achternaam = @1";
-            Password2 = db.QueryValue(Password2, Naam, Achternaam);
-        
-
-
-            if (Password==Password2)
-            {
-                var selectCom = "SELECT * FROM docenten WHERE voornaam = @0 AND achternaam = @1";
-                var row = db.QuerySingle(selectCom, Naam, Achternaam);
-                Session["Docentid"] = row.id;
-                Session["Admin"] = row.admin;
+            var userData = db.QuerySingle("SELECT * FROM docenten WHERE voornaam = @0 AND achternaam = @1 AND password = @2", Naam, Achternaam, Password);
+            if (userData != null) {
+                Session["Docentid"] = userData.id;
+                Session["Admin"] = userData.admin;
                 Context.RedirectLocal(returnUrl);
                 return;
-            } 
-            else 
-            {
-                ModelState.AddFormError("The user name or password provided is incorrect.");
+            } else {
+                ModelState.AddFormError("The username or password provided is incorrect.");  
             }
-
-            }
+        }
     }   
 }
 <hgroup class="title">
