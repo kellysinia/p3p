@@ -6,6 +6,7 @@
     var db = Database.Open("studentenoverzicht");
     var fileSavePath = "";
     var fileName = ".jpg";
+    bool allowed = false;
 
     // rId holds the Id of the user we want to edit.
     var rId = -1;
@@ -15,23 +16,31 @@
         rId = Convert.ToInt32(Request.QueryString["student_nr"]);
     }
  
-    bool allowed = false;
-
     // Check for docent login and admin rights
     // rId can't be -1 because a Docent can't edit himself
-    if (Session["Docentid"] != null && Session["Admin"] != null && rId == -1) {
-        allowed = true;
+    if (Session["Docentid"] != null && Session["Admin"] != null && rId != -1)
+    {
+        if(Convert.ToInt32(Session["Admin"]) == 1)
+        {
+            allowed = true;
+        }
+        else
+        {
+            Response.Redirect("/Home");
+        }
     }
 
     // Check for student login and rights
     // A user can only edit himself so the rId must be -1 or the rId must be equal to the id of the logged in user
-    if (Session["id"] != null && (rId == -1 || Convert.ToInt32(Session["id"]) == rId)) {
+    if (Session["id"] != null && rId == -1)
+    {
         rId = Convert.ToInt32(Session["id"]);
         allowed = true;
     }
 
     // If not allowed redirect back to login
-    if (!allowed) {
+    if (!allowed) 
+    {
         Response.Redirect("/Login");
     }
 
@@ -62,7 +71,6 @@
             Validation.RequireField("plaats", "Er moet een plaats ingevult zijn.");
             Validation.RequireField("mobiel", "Er moet een mobiel nummer ingevult zijn.");
             Validation.RequireField("tel_nr", "Er moet een telefoon nummer ingevult zijn.");
-            Validation.RequireField("student_id" );
  
             Session["email_prive"] = Request.Form["email_prive"];
             Session["plaats"] = Request.Form["plaats"];
@@ -116,13 +124,21 @@
         <p><input type="submit" name="buttonSubmit" value="Submit Changes" /></p>
     </fieldset>
     </form>
-    <p><a href="~/Home">Return to Home.</a></p>
-</div>
-<div class="fotouploader">
-    <h1>FileUpload - Single-File Example</h1>
-    @FileUpload.GetHtml(
-    initialNumberOfFiles:1,
-    allowMoreFilesToBeAdded:false,
-    includeFormTag:true,
-    uploadText:"Upload")
+    <div class="fotouploader">
+        <label for="Foto">Nieuw foto kiezen:</label>
+        @FileUpload.GetHtml(
+        initialNumberOfFiles:1,
+        allowMoreFilesToBeAdded:false,
+        includeFormTag:true,
+        uploadText:"Upload")
+        <br />
+        @if(Session["id"] != null)
+        {
+            <a href="~/Login?logout=1"><input type="submit" value="Uitloggen" /></a>
+        }
+        @if(Session["Docentid"] != null)
+        {
+            <a href="~/Home"><input type="submit" value="Terug naar overzicht" /></a>
+        }
+    </div>
 </div>

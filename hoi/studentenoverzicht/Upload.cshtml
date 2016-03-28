@@ -1,5 +1,7 @@
 ﻿@using Microsoft.Web.Helpers;
 @{
+    Functions.adminCheck();
+
     var fileSavePath = "";
     var fileName = "";
     if (IsPost) 
@@ -13,10 +15,10 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>FileUpload - Single-File Example</title>
+        <title>Upload pagina</title>
     </head>
     <body>
-        <h1>FileUpload - Single-File Example</h1>
+        <h2>Upload uw CSV bestand hier:</h2>
         @FileUpload.GetHtml(
             initialNumberOfFiles:1,
             allowMoreFilesToBeAdded:false,
@@ -27,5 +29,7 @@
             Response.Redirect("Read.cshtml?file=" + fileSavePath);
             <span>File uploaded!</span><br/>
         }
+        <br />
+        <a href="~/Admin"><input type="submit" value="Terug naar docenten overzicht" /></a>
     </body>
 </html>

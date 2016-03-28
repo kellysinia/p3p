@@ -3,12 +3,16 @@
     Page.Title = " Docent Log in";
 
     var db = Database.Open("studentenoverzicht");
-    var selectCommand = "SELECT * FROM Docent";
 
     var Naam = "";
     var Achternaam = "";
     var Password = "";
     var Password2 = "";
+
+    if(!Request.QueryString["logout"].IsEmpty())
+    {
+        Session.RemoveAll();
+    }
 
     var returnUrl = Request.QueryString["ReturnUrl"];
     if (returnUrl.IsEmpty()) 
@@ -16,61 +20,64 @@
         returnUrl = Href("~/Home");
     }
 
-    Validation.RequireField("Naam", "Wel naam invullen jong");
-    Validation.RequireField("Achternaam", "Wel achternaam invullen jong");
-    Validation.RequireField("Password", "You must specify a Password.");
+    Validation.RequireField("Email", "Er moet een e-mail adres ingevult worden.");
+    Validation.RequireField("Password", "Er moet een wachtwoord ingevult worden.");
     
     if (IsPost)
     {
         if (Validation.IsValid()) 
         {
-            Naam = Request.Form["Naam"];
-            Achternaam = Request.Form["Achternaam"];
-            Password = Request.Form["Password"];
-            var userData = db.QuerySingle("SELECT * FROM docenten WHERE voornaam = @0 AND achternaam = @1 AND password = @2", Naam, Achternaam, Password);
-            if (userData != null) {
-                Session["Docentid"] = userData.id;
-                Session["Admin"] = userData.admin;
-                Context.RedirectLocal(returnUrl);
-                return;
-            } else {
-                ModelState.AddFormError("The username or password provided is incorrect.");  
+            string Email = Request.Form["Email"];
+            Password = Crypto.Hash(Request.Form["Password"], "sha256");
+            var userData = db.QuerySingle("SELECT * FROM docenten WHERE email = @0", Email);
+            if (userData != null) 
+            {
+                if (userData.wachtwoord == Password)
+                {
+                    Session["Docentid"] = userData.id;
+                    Session["Admin"] = userData.admin;
+                    Context.RedirectLocal(returnUrl);
+                }
+                else
+                {
+                    ModelState.AddFormError("Het wachtwoord is fout.");
+                }
+            } 
+            else 
+            {
+                ModelState.AddFormError("Het E-mail adres is niet gevonden.");  
             }
         }
     }   
 }
-<hgroup class="title">
-    <h1>@Page.Title.</h1>
-</hgroup>
-
-<section id="loginForm">
-    <h2>Use your account to log in.</h2>
-    <form method="post">
-        @AntiForgery.GetHtml()
-        @Html.ValidationSummary("Log in was unsuccessful. Please correct the errors and try again.")
-
-        <fieldset>
-            <legend>Log in to Your Account</legend>
-            <ol>
-                <li class="email">
-                    <label for="email" @if (!ModelState.IsValidField("Naam"))
-                                       {<text>class="error-label"</text>}>Naam:</label>
-                    <input type="text" id="Naam" name="Naam" value="@Naam" @Validation.For("Naam")/>
-                    @Html.ValidationMessage("Naam")
-                </li>
-                <li class="email">
-                    <label for="email" @if (!ModelState.IsValidField("Achternaam"))
-                                       {<text>class="error-label"</text>}>Achternaam:</label>
-                    <input type="text" id="Achternaam" name="Achternaam" value="@Achternaam" @Validation.For("Achternaam")/>
-                    @Html.ValidationMessage("Achternaam")
-                </li>
-                <li class="Password">
-                    <label for="Password" @if (!ModelState.IsValidField("Password")) {<text>class="error-label"</text>}>Password</label>
-                    <input type="text" id="Password" name="Password" @Validation.For("Passoword")/>
-                    @Html.ValidationMessage("Password")
-                </li>
-            </ol>
-            <input type="submit" value="Log in" />
-        </fieldset>
-    </form>
-</section>
+<div class="container">
+    <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <h1>@Page.Title.</h1>
+            <section id="loginForm">
+                <form method="post">
+                    @AntiForgery.GetHtml()
+                    @Html.ValidationSummary("Het inloggen was niet succesvol, verbeter de fouten en probeer het opnieuw.")
+                    <fieldset>
+                        <legend>Log in met je account</legend>
+                        <ol>
+                            <li class="email">
+                                <label for="email" @if (!ModelState.IsValidField("Naam"))
+                                {<text>class="error-label"</text>}>E-mail:</label>
+                                <input type="text" id="Email" name="Email" value="@Naam" @Validation.For("Naam")/>
+                                @Html.ValidationMessage("Naam")
+                            </li>
+                            <li class="Password">
+                                <label for="Password" @if (!ModelState.IsValidField("Password")) {<text>class="error-label"</text>}>Password</label>
+                                <input type="text" id="Password" name="Password" @Validation.For("Passoword")/>
+                                @Html.ValidationMessage("Password")
+                            </li>
+                        </ol>
+                        <input type="submit" value="Log in" />
+                    </fieldset>
+                </form>
+            </section>
+            <a href="~/Login"><input type="submit" value="Inloggen als student" /></a>
+        </div>
+    <div class="col-md-3"></div>
+</div>

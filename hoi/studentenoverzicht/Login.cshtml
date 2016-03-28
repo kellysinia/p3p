@@ -9,14 +9,19 @@
     var straatnaam = "";
     var straatnaam2 = "";
 
+    if(!Request.QueryString["logout"].IsEmpty())
+    {
+        Session.RemoveAll();
+    }
+
     var returnUrl = Request.QueryString["ReturnUrl"];
     if (returnUrl.IsEmpty()) 
     {
         returnUrl = Href("~/Edit");
     }
 
-    Validation.RequireField("studentnummer", "You must specify an studentnummer.");
-    Validation.RequireField("straatnaam", "You must specify a straatnaam.");
+    Validation.RequireField("studentnummer", "Er moet een student nummer ingevult zijn.");
+    Validation.RequireField("straatnaam", "Er moet een straatnaam ingevult zijn.");
     
     if (IsPost) 
     {
@@ -24,10 +29,8 @@
         {
             studentnummer = Request.Form["studentnummer"];
             straatnaam = Request.Form["straatnaam"];
-            straatnaam2 = "SELECT adres FROM student WHERE student_nr =" +studentnummer;
-            straatnaam2 = db.QueryValue(straatnaam2);
-        
-
+            straatnaam2 = "SELECT adres FROM student WHERE student_nr = @0";
+            straatnaam2 = db.QueryValue(straatnaam2, studentnummer);
 
             if (straatnaam==straatnaam2)
             {
@@ -37,43 +40,39 @@
             } 
             else 
             {
-                ModelState.AddFormError("The user name or password provided is incorrect.");
+                ModelState.AddFormError("De ingevulde gegevens komen niet overeen.");
             }
-
-            }
+        }
     }   
 }
 <div class="container">
-   <div class="col-md-3"></div>
-    <div class="col-md-6">
-    <h1>@Page.Title.</h1>
-
-
-<section id="loginForm">
-    <h2>Use your account to log in.</h2>
-    <form method="post">
-        @AntiForgery.GetHtml()
-        @Html.ValidationSummary("Log in was unsuccessful. Please correct the errors and try again.")
-
-        <fieldset>
-            <legend>Log in to Your Account</legend>
-            <ol>
-                <li class="email">
-                    <label for="email" @if (!ModelState.IsValidField("studentnummer"))
-                                       {<text>class="error-label"</text>}>Studentnummer:</label>
-                    <input type="text" id="studentnummer" name="studentnummer" value="@studentnummer" @Validation.For("studentnummer")/>
-                    @Html.ValidationMessage("studentnummer")
-                </li>
-                <li class="straatnaam">
-                    <label for="straatnaam" @if (!ModelState.IsValidField("straatnaam")) {<text>class="error-label"</text>}>Password:</label>
-                    <input type="text" id="straatnaam" name="straatnaam" @Validation.For("straatnaam")/>
-                    @Html.ValidationMessage("straatnaam")
-                </li>
-            </ol>
-            <input type="submit" value="Log in" />
-        </fieldset>
-    </form>
-</section>
+    <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <h1>@Page.Title.</h1>
+            <section id="loginForm">
+                <form method="post">
+                    @AntiForgery.GetHtml()
+                    @Html.ValidationSummary("Het inloggen was niet succesvol, verbeter de fouten en probeer het opnieuw.")
+                    <fieldset>
+                        <legend>Log in met je account</legend>
+                        <ol>
+                            <li class="email">
+                                <label for="email" @if (!ModelState.IsValidField("studentnummer"))
+                                {<text>class="error-label"</text>}>Studentnummer:</label>
+                                <input type="text" id="studentnummer" name="studentnummer" value="@studentnummer" @Validation.For("studentnummer")/>
+                                @Html.ValidationMessage("studentnummer")
+                            </li>
+                            <li class="straatnaam">
+                                <label for="straatnaam" @if (!ModelState.IsValidField("straatnaam")) {<text>class="error-label"</text>}>Straatnaam:</label>
+                                <input type="text" id="straatnaam" name="straatnaam" @Validation.For("straatnaam")/>
+                                @Html.ValidationMessage("straatnaam")
+                            </li>
+                        </ol>
+                        <input type="submit" value="Log in" />
+                    </fieldset>
+                </form>
+            </section>
+            <a href="~/DLogin"><input type="submit" value="Inloggen als docent" /></a>
         </div>
     <div class="col-md-3"></div>
 </div>

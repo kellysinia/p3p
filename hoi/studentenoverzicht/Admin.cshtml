@@ -1,8 +1,16 @@
 ﻿@{
-    Session["docent"] = 1;
     Page.Title = "Admin";
     Layout= "~/_Layout.cshtml";
     var db = Database.Open("studentenoverzicht");
+    
+    Functions.adminCheck();
+
+    if(!Request.QueryString["delete"].IsEmpty())
+    {
+        var deleteCom = "DELETE FROM docenten WHERE id = @0";
+        db.Execute(deleteCom, Request.QueryString["delete"]);
+    }
+
     if(IsPost)
     {
         string id = Request["id"];
@@ -43,20 +51,23 @@
             <form method="get">
             <div>
                 <select name="category">
-                <option value="voornaam">voornaam</option>
-                <option value="achternaam">achternaam</option>
+                    <option value="voornaam">voornaam</option>
+                    <option value="achternaam">achternaam</option>
                 </select>
                 <input type="text" name="search" value="@Request.QueryString["search"]" />
                 <input type="Submit" value="Search" /><br/>
             </div>
             </form>
         </div>
+        <a href="~/Home"><input type="submit" value="Terug naar home" /></a>
+        <a href="~/Upload"><input type="submit" value="Naar Upload pagina" /></a>
+        <a href="~/Register"><input type="submit" value="Een docent toevoegen" /></a>
     </div>
 
     <div class="col-md-12">
         @foreach(var row in db.Query(selectCommand, searchTerm))
         {
-            if(row.id != Convert.ToInt32(Session["Docent"]))
+            if(row.id != Convert.ToInt32(Session["Docentid"]))
             {
                 string admin = "";
                 if (row.admin == 1)
@@ -82,14 +93,15 @@
                                 <input type="hidden" name="id" value="@row.id">
                                 @if(row.admin == 0)
                                 {
-                                    <input type="Submit" name="submit" value="Maak admin" /><br/>
+                                    <input type="Submit" name="submit" value="Maak admin" />
                                 }
                                 else
                                 {
-                                    <input type="Submit" name="submit" value="Ontneem admin" /><br/>
+                                    <input type="Submit" name="submit" value="Ontneem admin" />
                                 }
                             </div>
                             </form>
+                            <a href="~/Admin?delete=@row.id"><input type="submit" value="Delete" /></a>
                         </div>
                     </div>    
                  </div>

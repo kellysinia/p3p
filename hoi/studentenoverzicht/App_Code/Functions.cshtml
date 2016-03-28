@@ -11,4 +11,18 @@
             return -1;
         }
     }
+    public static void adminCheck()
+    {
+        if (Session["Docentid"] != null && Session["Admin"] != null)
+        {
+            if(Convert.ToInt32(Session["Admin"]) == 0)
+            {
+                Response.Redirect("/Home");
+            }
+        }
+        else
+        {
+            Response.Redirect("/DLogin");
+        }
+    }
 }

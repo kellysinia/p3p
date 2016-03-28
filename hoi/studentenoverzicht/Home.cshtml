@@ -3,6 +3,7 @@
     {
         Response.Redirect("~/DLogin");
     }
+
     Page.Title = "Studenten";
     Layout= "~/_Layout.cshtml";
 
@@ -32,16 +33,21 @@
             <div>
                 <label for="search">zoek naar:</label>
                 <select name="category">
-                <option value="klas">Klas</option>
-                <option value="voornaam">voornaam</option>
-                <option value="achternaam">achternaam</option>
-                <option value="mentor">SLB'er</option>
+                    <option value="klas">Klas</option>
+                    <option value="voornaam">voornaam</option>
+                    <option value="achternaam">achternaam</option>
+                    <option value="mentor">SLB'er</option>
                 </select>
                 <input type="text" name="search" value="@Request.QueryString["search"]" />
                 <input type="Submit" value="Search" /><br/>
             </div>
             </form>
         </div>
+        <a href="~/DLogin?logout=1"><input type="submit" value="Uitloggen" /></a>
+        @if(Convert.ToInt32(Session["Admin"]) == 1)
+        {
+            <a href="~/Admin"><input type="submit" value="Admin pagina" /></a>
+        }
     </div>
     <div class="col-md-12">
         @foreach(var row in db.Query(selectCommand, searchTerm))
@@ -56,6 +62,10 @@
                                 <div class="stimg">
                                     <img src="@row.foto" alt="student">
                                 </div>
+                                @if(Convert.ToInt32(Session["Admin"]) == 1)
+                                {
+                                    <a href="~/Edit?student_nr=@row.student_nr"><input type="submit" value="Aanpassen" /></a>
+                                }
                             </div>
                             <div class="col-md-4">
                                 <p>@row.voornaam  @row.tussenvoegsel  @row.achternaam</p>
@@ -67,7 +77,6 @@
                                 <p>Email: @row.email_school</p>
                                 <p>Prive email: @row.email_prive</p>
                             </div>
-                            <a href="~/Edit?student_nr=@row.student_nr"><input type="submit" value="Edit" /></a>
                         </div>
                         </a> 
                     </div>
