@@ -1,6 +1,6 @@
 ﻿@{
     Layout = "~/_Layout.cshtml";
-    Page.Title = " Docent Log in";
+    Page.Title = "Docent login";
 
     var db = Database.Open("studentenoverzicht");
 
@@ -20,8 +20,8 @@
         returnUrl = Href("~/Home");
     }
 
-    Validation.RequireField("Email", "Er moet een e-mail adres ingevult worden.");
-    Validation.RequireField("Password", "Er moet een wachtwoord ingevult worden.");
+    Validation.RequireField("Email", "Er moet een e-mailadres ingevuld worden.");
+    Validation.RequireField("Password", "Er moet een wachtwoord ingevuld worden.");
     
     if (IsPost)
     {
@@ -45,7 +45,7 @@
             } 
             else 
             {
-                ModelState.AddFormError("Het E-mail adres is niet gevonden.");  
+                ModelState.AddFormError("Het E-mailadres is niet gevonden.");  
             }
         }
     }   
@@ -57,7 +57,7 @@
             <section id="loginForm">
                 <form method="post">
                     @AntiForgery.GetHtml()
-                    @Html.ValidationSummary("Het inloggen was niet succesvol, verbeter de fouten en probeer het opnieuw.")
+                    @Html.ValidationSummary("Het inloggen is niet gelukt, verbeter de fouten en probeer het opnieuw.")
                     <fieldset>
                         <legend>Log in met je account</legend>
                         <ol>
@@ -73,7 +73,7 @@
                                 @Html.ValidationMessage("Password")
                             </li>
                         </ol>
-                        <input type="submit" value="Log in" />
+                        <input type="submit" value="Login" />
                     </fieldset>
                 </form>
             </section>

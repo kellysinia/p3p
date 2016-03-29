@@ -66,11 +66,11 @@
     {
         if (Request.Form["buttonSubmit"] == "Submit Changes")
         {
-            Validation.RequireField("email_prive", "Er moet een e-mail adres ingevult zijn.");
-            Validation.RequireField("adres", "Er moet een adres ingevult zijn.");
-            Validation.RequireField("plaats", "Er moet een plaats ingevult zijn.");
-            Validation.RequireField("mobiel", "Er moet een mobiel nummer ingevult zijn.");
-            Validation.RequireField("tel_nr", "Er moet een telefoon nummer ingevult zijn.");
+            Validation.RequireField("email_prive", "Er moet een e-mailadres ingevuld zijn.");
+            Validation.RequireField("adres", "Er moet een adres ingevuld zijn.");
+            Validation.RequireField("plaats", "Er moet een plaats ingevuld zijn.");
+            Validation.RequireField("mobiel", "Er moet een mobiel nummer ingevuld zijn.");
+            Validation.RequireField("tel_nr", "Er moet een telefoonnummer ingevuld zijn.");
  
             Session["email_prive"] = Request.Form["email_prive"];
             Session["plaats"] = Request.Form["plaats"];
@@ -107,17 +107,17 @@
     @Html.ValidationSummary()
     <form method="post">
     <fieldset>
-        <legend>Student Information</legend>
+        <legend>Studentinformatie</legend>
        
         <p><label for="naam">Naam: @Session["naam"]</label></p>
         <p><label for="vooropleiding">Vooropleiding: @Session["vooropleiding"]</label></p>
-        <p><label for="email_prive">Prive email:</label>
+        <p><label for="email_prive">Privé-e-mail:</label>
             <input type="text" name="email_prive" value="@Session["email_prive"]" /></p>
-        <p><label for="plaats">plaats:</label>
+        <p><label for="plaats">Plaats:</label>
             <input type="text" name="plaats" value="@Session["plaats"]" /></p>
         <p><label for="adres">Adres:</label>
             <input type="text" name="adres" value="@Session["adres"]" /></p>
-        <p><label for="tel_nr">Telefoon nummer:</label>
+        <p><label for="tel_nr">Telefoonnummer:</label>
             <input type="text" name="tel_nr" value="@Session["tel_nr"]" /></p>
         <p><label for="mobiel">Mobiel nummer:</label>
             <input type="text" name="mobiel" value="@Session["mobiel"]" /></p>            
@@ -125,7 +125,7 @@
     </fieldset>
     </form>
     <div class="fotouploader">
-        <label for="Foto">Nieuw foto kiezen:</label>
+        <label for="Foto">Nieuwe foto kiezen:</label>
         @FileUpload.GetHtml(
         initialNumberOfFiles:1,
         allowMoreFilesToBeAdded:false,

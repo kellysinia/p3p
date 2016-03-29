@@ -1,6 +1,6 @@
 ﻿@{
     Layout = "~/_Layout.cshtml";
-    Page.Title = " Student Log in";
+    Page.Title = " Student Login";
 
     var db = Database.Open("studentenoverzicht");
     var selectCommand = "SELECT * FROM Student";
@@ -20,8 +20,8 @@
         returnUrl = Href("~/Edit");
     }
 
-    Validation.RequireField("studentnummer", "Er moet een student nummer ingevult zijn.");
-    Validation.RequireField("straatnaam", "Er moet een straatnaam ingevult zijn.");
+    Validation.RequireField("studentnummer", "Er moet een studentnummer ingevuld zijn.");
+    Validation.RequireField("straatnaam", "Er moet een straatnaam ingevuld zijn.");
     
     if (IsPost) 
     {
@@ -52,7 +52,7 @@
             <section id="loginForm">
                 <form method="post">
                     @AntiForgery.GetHtml()
-                    @Html.ValidationSummary("Het inloggen was niet succesvol, verbeter de fouten en probeer het opnieuw.")
+                    @Html.ValidationSummary("Het inloggen is niet gelukt, verbeter de fouten en probeer het opnieuw.")
                     <fieldset>
                         <legend>Log in met je account</legend>
                         <ol>
@@ -68,7 +68,7 @@
                                 @Html.ValidationMessage("straatnaam")
                             </li>
                         </ol>
-                        <input type="submit" value="Log in" />
+                        <input type="submit" value="Login" />
                     </fieldset>
                 </form>
             </section>

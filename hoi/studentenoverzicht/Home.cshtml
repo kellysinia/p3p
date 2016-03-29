@@ -31,7 +31,7 @@
         <div class="zoek">
             <form method="get">
             <div>
-                <label for="search">zoek naar:</label>
+                <label for="search">Zoek naar:</label>
                 <select name="category">
                     <option value="klas">Klas</option>
                     <option value="voornaam">voornaam</option>
@@ -46,7 +46,7 @@
         <a href="~/DLogin?logout=1"><input type="submit" value="Uitloggen" /></a>
         @if(Convert.ToInt32(Session["Admin"]) == 1)
         {
-            <a href="~/Admin"><input type="submit" value="Admin pagina" /></a>
+            <a href="~/Admin"><input type="submit" value="Adminpagina" /></a>
         }
     </div>
     <div class="col-md-12">
@@ -84,7 +84,7 @@
                         <div class="panel-body">
                             <div class="col-md-4"> 
                                 <div class="stimg">
-                                    <p>Geboorte datum: @row.geb_datum</p>
+                                    <p>Geboortedatum: @row.geb_datum</p>
                                     <p>Geslacht: @row.geslacht</p>
                                     <p>Vooropleiding: @row.vooropleiding</p>
                                 </div>
@@ -95,7 +95,7 @@
                                 <p>@row.land</p>
                             </div>
                             <div class="col-md-4">
-                                <p>aanmeld datum: @row.aanmeld_datum</p>
+                                <p>aanmelddatum: @row.aanmeld_datum</p>
                                 <p>van: @row.datum_van</p>
                                 <p>tot: @row.datum_tot</p>
                             </div>
