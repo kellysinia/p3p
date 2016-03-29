@@ -1,17 +1,17 @@
 ﻿@{
-    Functions.adminCheck();
+    Functions.adminCheck(); // check of er een admin ingelogd is
 
     Page.Title = "Docent toevoegen.";
     Layout = "~/_Layout.cshtml";
 
-    if(IsPost)
+    if(IsPost) // Kijk of alles is ingevuld
     {
         Validation.RequireField("voornaam", "Er moet een voornaam ingevuld zijn.");
         Validation.RequireField("achternaam", "Er moet een achternaam ingevuld zijn.");
         Validation.RequireField("email", "Er moet een e-mailadres ingevuld zijn.");
         Validation.RequireField("wachtwoord", "Er moet een telefoonnummer ingevuld zijn.");
  
-        if(Validation.IsValid())
+        if(Validation.IsValid()) // Als alles goed is, gooi het in de database
         {
             var db = Database.Open("studentenoverzicht");
             var updateCommand = "INSERT INTO docenten (voornaam, tussenvoegsel, achternaam, email, wachtwoord) VALUES (@0, @1, @2, @3, @4)";
@@ -24,7 +24,7 @@
     @Html.ValidationSummary()
     <form method="post">
     <fieldset>
-        <legend>Docent informatie:</legend>
+        <legend>Docent informatie:</legend> <!-->invoer informatie<-->
         <p><input type="text" name="voornaam" placeholder="Voornaam" /></p>
         <p><input type="text" name="tussenvoegsel" placeholder="tussenvoegsel" /></p>
         <p><input type="text" name="achternaam" placeholder="Achternaam" /></p>
@@ -33,5 +33,5 @@
         <p><input type="submit" name="submit" value="Docent aanmaken" /></p>
     </fieldset>
     </form>
-    <a href="~/Admin"><input type="submit" value="Terug naar overzicht" /></a>
+    <a href="~/Admin"><input type="submit" value="Terug naar overzicht" /></a>  <!-->knop om terug naar het overicht te gaan<-->
 <div class="col-md-5"></div>

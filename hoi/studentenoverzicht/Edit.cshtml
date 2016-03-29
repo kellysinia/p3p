@@ -44,12 +44,12 @@
         Response.Redirect("/Login");
     }
 
-    if(!IsPost)
+    if(!IsPost) // als er geen post is dan haalt hij alle gegevens op van de gekozen student.
     {
         var selectCommand = "SELECT * FROM Student WHERE student_nr = @0";
         var row = db.QuerySingle(selectCommand, rId);
            
-        if(row != null)
+        if(row != null) // alles wat hij ophaalt word in een sessie variabele gestopt zodat je het behoud als je pagina refreshed
         {
             Session["email_prive"] = row.email_prive;
             Session["adres"] = row.adres;
@@ -62,7 +62,7 @@
             Session["foto"] = row.foto;
         }
     }
-    if(IsPost)
+    if(IsPost) // als er op submit word gedrukt dan zet hij de nieuwe gegevens in de database en session.
     {
         if (Request.Form["buttonSubmit"] == "Submit Changes")
         {
@@ -85,7 +85,7 @@
                 Response.Redirect("~/Edit");
             }
         }
-        else
+        else // als er is gepost zoder op die submit te drukken dan upload hij de foto
         {
             var uploadedFile = Request.Files[0];
             fileName = Convert.ToString(rId) + fileName;

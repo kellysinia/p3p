@@ -13,7 +13,7 @@
     var category= "";
     var searchTerm = "";
     
-    if(!Request.QueryString["search"].IsEmpty() ) 
+    if(!Request.QueryString["search"].IsEmpty() ) // als zoeken niet leeg is, en de knop word aangedrukt ...
     {
         searchTerm = "%" + Request.QueryString["search"] + "%";
         category = Request.QueryString ["category"];
@@ -29,7 +29,7 @@
     </div>
     <div class="col-md-6">
         <div class="zoek">
-            <form method="get">
+            <form method="get"> <!-->het dropdown menu voor het selecteren van de zoekcategorie<-->
             <div>
                 <label for="search">Zoek naar:</label>
                 <select name="category">
@@ -43,16 +43,16 @@
             </div>
             </form>
         </div>
-        <a href="~/DLogin?logout=1"><input type="submit" value="Uitloggen" /></a>
+        <a href="~/DLogin?logout=1"><input type="submit" value="Uitloggen" /></a> <!-->Loguit knop<-->
         @if(Convert.ToInt32(Session["Admin"]) == 1)
         {
-            <a href="~/Admin"><input type="submit" value="Adminpagina" /></a>
+            <a href="~/Admin"><input type="submit" value="Adminpagina" /></a> <!-->Adminpagina knop<-->
         }
     </div>
     <div class="col-md-12">
-        @foreach(var row in db.Query(selectCommand, searchTerm))
+        @foreach(var row in db.Query(selectCommand, searchTerm)) <!-->Voor elk gevonden persoon...<-->
         {
-            var collapse = "collapse"+row.student_nr;
+            var collapse = "collapse"+row.student_nr;  <!-->Het systeem voor het afbeelden, uitschuiven en collapsen van de blokken om de gevonden personen<-->
             <div class="panel-group">
                 <div class="panel panel-default">
                     <div class="panel-heading">
@@ -62,17 +62,17 @@
                                 <div class="stimg">
                                     <img src="@row.foto" alt="student">
                                 </div>
-                                @if(Convert.ToInt32(Session["Admin"]) == 1)
+                                @if(Convert.ToInt32(Session["Admin"]) == 1) // als de docent een admin is...
                                 {
-                                    <a href="~/Edit?student_nr=@row.student_nr"><input type="submit" value="Aanpassen" /></a>
+                                    <a href="~/Edit?student_nr=@row.student_nr"><input type="submit" value="Aanpassen" /></a> // edit knop
                                 }
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-4">  <!-->beeld de volgende info af<-->
                                 <p>@row.voornaam  @row.tussenvoegsel  @row.achternaam</p>
                                 <p>Klas: @row.klas</p>
                                 <p>Mentor: @row.mentor</p>
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-4">  <!-->beeld de volgende info af<-->
                                 <p>Mobiel: @row.mobiel</p>
                                 <p>Email: @row.email_school</p>
                                 <p>Prive email: @row.email_prive</p>
@@ -80,7 +80,7 @@
                         </div>
                         </a> 
                     </div>
-                    <div id=@collapse class="panel-collapse collapse out">
+                    <div id=@collapse class="panel-collapse collapse out"> <!-->Uitklappen en tonen van extra informatie<-->
                         <div class="panel-body">
                             <div class="col-md-4"> 
                                 <div class="stimg">

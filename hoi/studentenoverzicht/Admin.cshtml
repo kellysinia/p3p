@@ -3,23 +3,23 @@
     Layout= "~/_Layout.cshtml";
     var db = Database.Open("studentenoverzicht");
     
-    Functions.adminCheck();
+    Functions.adminCheck(); // in appcode staan bepaalde functies (int-converter en admin-checker)
 
-    if(!Request.QueryString["delete"].IsEmpty())
+    if(!Request.QueryString["delete"].IsEmpty())  // als delete als get variabele in de url komt te staan, dan word de waarde van delete in de database verwijderd
     {
         var deleteCom = "DELETE FROM docenten WHERE id = @0";
-        db.Execute(deleteCom, Request.QueryString["delete"]);
+        db.Execute(deleteCom, Request.QueryString["delete"]); //verwijder de database entry die gelijk staat aan de waarde van delete in de url
     }
 
     if(IsPost)
     {
-        string id = Request["id"];
-        if(Request["submit"] == "Maak admin")
+        string id = Request.Form["id"];  // haalt de id uit de post met de naam "id"
+        if(Request["submit"] == "Maak admin")  // als de submit knop als waarde "Maak admin" heeft, maak de persoon admin
         {
             var updateCom = "UPDATE docenten SET admin = 1 WHERE id = @0";
             db.Execute(updateCom, id);
         }
-        else
+        else  // als het niet ""Maak admin" is , ontneem admin rechten
         {
             var updateCom = "UPDATE docenten SET admin = 0 WHERE id = @0";
             db.Execute(updateCom, id);
@@ -30,12 +30,12 @@
     var category= "";
     var category2= "";
     var searchTerm = "";
-    bool mopshond = false;
     
-    if(!Request.QueryString["search"].IsEmpty()) 
+    
+    if(!Request.QueryString["search"].IsEmpty()) //als search niet leeg is, en de search knop word ingdrukt, zoek in de database naar de zoekopdracht
     {
         searchTerm = "%" + Request.QueryString["search"] + "%";
-        category = Request.QueryString ["category"];
+        category = Request.QueryString ["category"];  // haalt de categorie (klas?, jaar?) uit de dropdown
         selectCommand = "SELECT * FROM docenten where "+category+" like @0";
     }
 }
@@ -48,7 +48,7 @@
     </div>
     <div class="col-md-6">
         <div class="zoek">
-            <form method="get">
+            <form method="get"> <!-->de value van search word in deze form gezet op wat ingevoerd is</-->
             <div>
                 <select name="category">
                     <option value="voornaam">voornaam</option>
@@ -65,12 +65,12 @@
     </div>
 
     <div class="col-md-12">
-        @foreach(var row in db.Query(selectCommand, searchTerm))
+        @foreach(var row in db.Query(selectCommand, searchTerm)) <!-->Voor elke gevonden docent word dit uitgevoed </-->
         {
-            if(row.id != Convert.ToInt32(Session["Docentid"]))
+            if(row.id != Convert.ToInt32(Session["Docentid"])) <!-->de ingelogde kan zichzelf niet in de lijst zien</-->
             {
                 string admin = "";
-                if (row.admin == 1)
+                if (row.admin == 1)  <!-->Laten zien of de docent al admin is</-->
                 {
                     admin = "Admin";
                 }
@@ -84,14 +84,14 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <p>@row.voornaam  @row.tussenvoegsel  @row.achternaam</p>
-                                    <p>Adminstatus: @admin</p>
+                                    <p>Adminstatus: @admin</p> <!--> display de of de docent admin is (vanuit de functie hierboven)</-->
                                     <p>E-mailadres: @row.email</p>
                                 </div>
                             </div>
-                            <form action="Admin.cshtml" method="post">   
+                            <form action="Admin.cshtml" method="post"> <!-->pas de waarde van de admin knop aan </-->
                             <div>
                                 <input type="hidden" name="id" value="@row.id">
-                                @if(row.admin == 0)
+                                @if(row.admin == 0) <!-->als iemand niet admin is...</-->
                                 {
                                     <input type="Submit" name="submit" value="Maak admin" />
                                 }
@@ -101,7 +101,7 @@
                                 }
                             </div>
                             </form>
-                            <a href="~/Admin?delete=@row.id"><input type="submit" value="Delete" /></a>
+                            <a href="~/Admin?delete=@row.id"><input type="submit" value="Delete" /></a> <!--> gooi een delete commando achter de url en re-load hem</-->
                         </div>
                     </div>    
                  </div>

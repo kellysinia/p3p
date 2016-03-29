@@ -52,10 +52,10 @@
             <section id="loginForm">
                 <form method="post">
                     @AntiForgery.GetHtml()
-                    @Html.ValidationSummary("Het inloggen is niet gelukt, verbeter de fouten en probeer het opnieuw.")
+                    @Html.ValidationSummary("Het inloggen is niet gelukt, verbeter de fouten en probeer het opnieuw.") <!-->Als het inloggen mislukt is...<-->
                     <fieldset>
                         <legend>Log in met je account</legend>
-                        <ol>
+                        <ol> <!-->Invoer en check van inloggegevens student<-->
                             <li class="email">
                                 <label for="email" @if (!ModelState.IsValidField("studentnummer"))
                                 {<text>class="error-label"</text>}>Studentnummer:</label>
@@ -68,11 +68,11 @@
                                 @Html.ValidationMessage("straatnaam")
                             </li>
                         </ol>
-                        <input type="submit" value="Login" />
+                        <input type="submit" value="Login" /> <!-->Login knop<-->
                     </fieldset>
                 </form>
             </section>
-            <a href="~/DLogin"><input type="submit" value="Inloggen als docent" /></a>
+            <a href="~/DLogin"><input type="submit" value="Inloggen als docent" /></a> <!-->Docent login verwijzing<-->
         </div>
     <div class="col-md-3"></div>
 </div>
