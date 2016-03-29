@@ -10,6 +10,7 @@
         fileName = Path.GetFileName(uploadedFile.FileName);
         fileSavePath = Server.MapPath("~/App_Data/UploadedFiles/" + fileName);
         uploadedFile.SaveAs(fileSavePath);
+        Response.Redirect("Read.cshtml?file=" + fileSavePath);
     }
 }
 <!DOCTYPE html>
@@ -24,12 +25,12 @@
             allowMoreFilesToBeAdded:false,
             includeFormTag:true,
             uploadText:"Upload")
-        @if (IsPost) 
-        {
-            Response.Redirect("Read.cshtml?file=" + fileSavePath);
-            <span>File uploaded!</span><br/>
-        }
         <br />
+        <form action="crawl.cshtml" method="get">
+        Een klas hun foto's uploaden:
+        <input type="text" name="url" placeholder="Plak hier uw url." />
+        <input type="submit" name="submit" value="Foto's ophalen" />
+        </form>
         <a href="~/Admin"><input type="submit" value="Terug naar docentenoverzicht" /></a>
     </body>
 </html>

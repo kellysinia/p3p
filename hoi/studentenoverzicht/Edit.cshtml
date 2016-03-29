@@ -2,8 +2,7 @@
 @{
     Page.Title = "Edit info.";
     Layout = "~/_Layout.cshtml";
- 
-    var db = Database.Open("studentenoverzicht");
+
     var fileSavePath = "";
     var fileName = ".jpg";
     bool allowed = false;
@@ -43,7 +42,7 @@
     {
         Response.Redirect("/Login");
     }
-
+    var db = Database.Open("studentenoverzicht");
     if(!IsPost) // als er geen post is dan haalt hij alle gegevens op van de gekozen student.
     {
         var selectCommand = "SELECT * FROM Student WHERE student_nr = @0";
@@ -95,6 +94,7 @@
             Session["foto"] = fileName;
             uploadedFile.SaveAs(fileSavePath);
         }
+        db.Close;
     }
 }
 <div class="col-md-6">

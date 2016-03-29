@@ -48,7 +48,7 @@
     </div>
     <div class="col-md-6">
         <div class="zoek">
-            <form method="get"> <!-->de value van search word in deze form gezet op wat ingevoerd is</-->
+            <form method="get"> <!--de value van search word in deze form gezet op wat ingevoerd is-->
             <div>
                 <select name="category">
                     <option value="voornaam">voornaam</option>
@@ -65,12 +65,13 @@
     </div>
 
     <div class="col-md-12">
-        @foreach(var row in db.Query(selectCommand, searchTerm)) <!-->Voor elke gevonden docent word dit uitgevoed </-->
+        db.
+        @foreach(var row in db.Query(selectCommand, searchTerm)) //Voor elke gevonden docent word dit uitgevoed
         {
-            if(row.id != Convert.ToInt32(Session["Docentid"])) <!-->de ingelogde kan zichzelf niet in de lijst zien</-->
+            if(row.id != Convert.ToInt32(Session["Docentid"])) //de ingelogde kan zichzelf niet in de lijst zien
             {
                 string admin = "";
-                if (row.admin == 1)  <!-->Laten zien of de docent al admin is</-->
+                if (row.admin == 1)  //Laten zien of de docent al admin is
                 {
                     admin = "Admin";
                 }
@@ -84,14 +85,14 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <p>@row.voornaam  @row.tussenvoegsel  @row.achternaam</p>
-                                    <p>Adminstatus: @admin</p> <!--> display de of de docent admin is (vanuit de functie hierboven)</-->
+                                    <p>Adminstatus: @admin</p> <!-- display de of de docent admin is (vanuit de functie hierboven)-->
                                     <p>E-mailadres: @row.email</p>
                                 </div>
                             </div>
-                            <form action="Admin.cshtml" method="post"> <!-->pas de waarde van de admin knop aan </-->
+                            <form action="Admin.cshtml" method="post"> <!--pas de waarde van de admin knop aan -->
                             <div>
                                 <input type="hidden" name="id" value="@row.id">
-                                @if(row.admin == 0) <!-->als iemand niet admin is...</-->
+                                @if(row.admin == 0) //als iemand niet admin is...
                                 {
                                     <input type="Submit" name="submit" value="Maak admin" />
                                 }
@@ -101,11 +102,12 @@
                                 }
                             </div>
                             </form>
-                            <a href="~/Admin?delete=@row.id"><input type="submit" value="Delete" /></a> <!--> gooi een delete commando achter de url en re-load hem</-->
+                            <a href="~/Admin?delete=@row.id"><input type="submit" value="Delete" /></a> <!-- gooi een delete commando achter de url en re-load hem -->
                         </div>
                     </div>    
                  </div>
             }
         }           
     </div>
-</div> 
+</div>
+@db.Close()

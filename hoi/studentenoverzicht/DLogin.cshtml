@@ -2,8 +2,6 @@
     Layout = "~/_Layout.cshtml";
     Page.Title = "Docent login";
 
-    var db = Database.Open("studentenoverzicht");
-
     var Naam = "";
     var Achternaam = "";
     var Password = "";
@@ -11,7 +9,7 @@
     
     if(!Request.QueryString["logout"].IsEmpty()) //als in de url "Logout" niet leeg is (als de gebruiker op uitloggen drukt) 
     {
-        Session.RemoveAll(); //gooie alle sessions leeg
+        Session.RemoveAll(); //gooi alle sessions leeg
     }
 
     var returnUrl = Request.QueryString["ReturnUrl"]; //waar hij naartoe moet als er word ge-redirect naar "returnUrl"
@@ -27,9 +25,11 @@
     {
         if (Validation.IsValid()) // als de validatie (hierboven) successvol is.../
         {
+            var db = Database.Open("studentenoverzicht");
             string Email = Request.Form["Email"];
             Password = Crypto.Hash(Request.Form["Password"], "sha256");
             var userData = db.QuerySingle("SELECT * FROM docenten WHERE email = @0", Email);
+            db.Close();
             if (userData != null) 
             {
                 if (userData.wachtwoord == Password) // kijk of het wachtwoord klopt
@@ -56,10 +56,10 @@
             <h1>@Page.Title.</h1>
             <section id="loginForm">
                 <form method="post">
-                    @AntiForgery.GetHtml() <!-->Beveiligings maatregel van HTML <-->
-                    @Html.ValidationSummary("Het inloggen is niet gelukt, verbeter de fouten en probeer het opnieuw.") <!-->Als de valiadie verkeerd gaat...<-->
+                    @AntiForgery.GetHtml() <!--Beveiligings maatregel van HTML -->
+                    @Html.ValidationSummary("Het inloggen is niet gelukt, verbeter de fouten en probeer het opnieuw.") <!--Als de valiadie verkeerd gaat...-->
                     <fieldset>
-                        <legend>Log in met je account</legend> <!-->invullen en kijken of het ingevulde allemaal klopt<-->
+                        <legend>Log in met je account</legend> <!--invullen en kijken of het ingevulde allemaal klopt-->
                         <ol>
                             <li class="email">
                                 <label for="email" @if (!ModelState.IsValidField("Naam"))
@@ -73,11 +73,11 @@
                                 @Html.ValidationMessage("Password")
                             </li>
                         </ol>
-                        <input type="submit" value="Login" /> <!-->login knop<-->
+                        <input type="submit" value="Login" /> <!--login knop-->
                     </fieldset>
                 </form>
             </section>
-            <a href="~/Login"><input type="submit" value="Inloggen als student" /></a> <!-->student login knop<-->
+            <a href="~/Login"><input type="submit" value="Inloggen als student" /></a> <!--student login knop-->
         </div>
     <div class="col-md-3"></div>
 </div>

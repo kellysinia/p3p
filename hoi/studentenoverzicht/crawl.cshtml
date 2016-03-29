@@ -1,0 +1,52 @@
+﻿@{
+    var result = Functions.GetJSDataStructures(Request.QueryString["url"]);
+    
+    List<string> urls = new List<string>();
+    List<string> names = new List<string>();
+    List<string> groups = new List<string>();
+
+    foreach (KeyValuePair<string, Dictionary<int, string>> array in result)
+    {
+        foreach (KeyValuePair<int, string> entry in array.Value)
+        {
+            if (array.Key == "dirLink")
+            {
+                if (entry.Key > 0)
+                {
+                    groups.Add("http://webserv.nhl.nl/~oosterha/eng2015/index.php?sfpg=" + entry.Value);
+                }
+            }
+        }
+    }
+
+    foreach (string group in groups)
+    {
+        result = Functions.GetJSDataStructures(group);
+
+        foreach (KeyValuePair<string, Dictionary<int, string>> array in result)
+        {
+            foreach (KeyValuePair<int, string> entry in array.Value)
+            {
+                if (array.Key == "imgLink")
+                {
+                    urls.Add("http://webserv.nhl.nl/~oosterha/eng2015/index.php?cmd=image&sfpg=" + entry.Value);
+                }
+                if (array.Key == "imgName")
+                {
+                    string[] words = entry.Value.Split(' ');
+                    names.Add(words[0]);
+                }
+            }
+        }
+        int index = 0;
+        var db = Database.Open("studentenoverzicht");
+        foreach (string name in names)
+        {
+            var insertCom = "UPDATE student SET foto = @0 WHERE achternaam = @1";
+            db.Execute(insertCom, urls[index], names[index]);
+            index++;
+        }
+        db.Close();
+    }
+    Response.Redirect("/Upload.cshtml");
+}

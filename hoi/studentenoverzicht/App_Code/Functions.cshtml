@@ -1,4 +1,5 @@
-﻿@functions
+﻿@using System.Text.RegularExpressions
+@functions
 {
     public static int intcon (string input)
     {
@@ -24,5 +25,22 @@
         {
             Response.Redirect("/DLogin");
         }
+    }
+    public static Dictionary<string, Dictionary<int, string>> GetJSDataStructures(string url)
+    {
+        Dictionary<string, Dictionary<int, string>> output = new Dictionary<string, Dictionary<int, string>>();
+
+        string content;
+        using (WebClient client = new WebClient()) content = client.DownloadString(url);
+            
+        foreach(Match m in Regex.Matches(content, @"(\w+)\[(\d+)\]\s*=\s*[\'](.*)[\'];"))
+        {
+            if (!output.ContainsKey(m.Groups[1].Value)) output.Add(m.Groups[1].Value, new Dictionary<int, string>());
+
+            int index = Convert.ToInt32(m.Groups[2].Value);
+            output[m.Groups[1].Value].Add(index, m.Groups[3].Value);
+        }
+        
+        return output;
     }
 }
