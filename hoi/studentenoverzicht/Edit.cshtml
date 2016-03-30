@@ -79,9 +79,12 @@
  
             if(Validation.IsValid())
             {
-                var updateCommand = "UPDATE student SET email_prive=@0, plaats=@1, adres=@2, tel_nr=@3, mobiel=@4,  WHERE student_nr=@5";
+                Response.Write(rId);
+                var updateCommand = "UPDATE student SET email_prive=@0, plaats=@1, adres=@2, tel_nr=@3, mobiel=@4 WHERE student_nr=@5";
                 db.Execute(updateCommand, Session["email_prive"], Session["plaats"], Session["adres"], Session["tel_nr"], Session["mobiel"], rId);
-                Response.Redirect("~/Edit");
+                //var updateCommand = "SELECT voornaam FROM student WHERE student_nr = @0";
+                //db.Execute(updateCommand, rId);
+                
             }
         }
         else // als er is gepost zoder op die submit te drukken dan upload hij de foto
@@ -94,7 +97,7 @@
             Session["foto"] = fileName;
             uploadedFile.SaveAs(fileSavePath);
         }
-        db.Close;
+        db.Close();
     }
 }
 <div class="col-md-6">
